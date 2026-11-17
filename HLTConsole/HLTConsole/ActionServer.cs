@@ -25,6 +25,9 @@ namespace HLTStudio
 
 		private static Action<HTTPServerChannel> GetAction(string urlPath)
 		{
+			if (urlPath == "/API-Dummy")
+				return channel => new Action_Dummy().Run(channel);
+
 			if (urlPath == "/API-Echo")
 				return channel => new Action_Echo().Run(channel);
 

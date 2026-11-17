@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionServer.cs" />
+    <Compile Include="Actions\Action_Dummy.cs" />
     <Compile Include="Actions\Action_Echo.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Commons\ArgsReader.cs" />

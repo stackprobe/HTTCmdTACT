@@ -12,8 +12,8 @@ namespace HLTStudio.Actions
 		public void Run(HTTPServerChannel channel)
 		{
 			channel.ResStatus = 200;
-			channel.ResHeaderPairs.Add(new string[] { "Content-Type", "text/plain; charset=US-ASCII" });
-			channel.ResBody = new byte[][] { Encoding.ASCII.GetBytes("Echo") };
+			channel.ResHeaderPairs.Add(new string[] { "Content-Type", "application/octet-stream" });
+			channel.ResBody = new byte[][] { channel.Body.ToByteArray() };
 			channel.ResBodyLength = -1L;
 		}
 	}

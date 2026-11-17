@@ -10,12 +10,15 @@
         <li><a href="_content-extension-test/ContentExtensionTest-01.html">ContentExtensionTest-01.html</a></li>
         <li><a href="_content-extension-test/ContentExtensionTest-02.html">ContentExtensionTest-02.html</a></li>
     </ul>
+    <h2>API-Dummy</h2>
+    <pre id="dummy-response" role="status">Loading...</pre>
+    <h2>API-Echo</h2>
     <pre id="response" role="status">Loading...</pre>
     <script>
-        async function echo() {
-            const output = document.getElementById('response');
+        async function dummy() {
+            const output = document.getElementById('dummy-response');
             try {
-                const response = await fetch('/API-Echo', { method: 'POST' });
+                const response = await fetch('/API-Dummy');
                 const text = await response.text();
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${text}`);
@@ -25,6 +28,24 @@
                 output.textContent = `Error: ${error.message}`;
             }
         }
+        async function echo() {
+            const output = document.getElementById('response');
+            try {
+                const response = await fetch('/API-Echo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain charset=UTF-8' },
+                    body: new TextEncoder().encode('あああああ\n★★★\nABC123XYZ789')
+                });
+                const text = new TextDecoder('utf-8').decode(await response.arrayBuffer());
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${text}`);
+                }
+                output.textContent = text;
+            } catch (error) {
+                output.textContent = `Error: ${error.message}`;
+            }
+        }
+        dummy();
         echo();
     </script>
 </body>
