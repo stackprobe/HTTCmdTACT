@@ -22,7 +22,6 @@ namespace HLTStudio
 		private static readonly string[] CONTENT_EXTENSION_TARGET_EXTS = new string[]
 		{
 			".html",
-			".txt",
 		};
 
 		private string StrPath;
@@ -80,7 +79,7 @@ namespace HLTStudio
 
 		private byte[] GetDummyContent(string[] parameters)
 		{
-			return SCommon.ENCODING_SJIS.GetBytes($"これは \"{this.StrPath}\" というファイルのコンテンツ拡張です。(これはダミーです)");
+			return Encoding.UTF8.GetBytes($"<meta charset=\"UTF-8\"><div>これは \"{this.StrPath}\" というファイルのコンテンツ拡張です。(これはダミーです)</div>");
 		}
 
 		private byte[] ReplaceWhenSmartphone(string[] parameters)
