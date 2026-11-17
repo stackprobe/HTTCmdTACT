@@ -157,13 +157,13 @@ namespace HLTStudio
 					this.DocRoot = Directory.GetCurrentDirectory();
 				}
 
-				ProcMain.WriteLog("HTTCmdPOST-Start");
+				ProcMain.WriteLog("HTTCmdTACT-Start");
 				ProcMain.WriteLog("DocRoot: " + this.DocRoot);
 				ProcMain.WriteLog("PortNo: " + hs.PortNo);
 
 				hs.Run();
 
-				ProcMain.WriteLog("HTTCmdPOST-End");
+				ProcMain.WriteLog("HTTCmdTACT-End");
 			}
 		}
 
@@ -327,7 +327,7 @@ namespace HLTStudio
 				}
 			}
 
-			channel.ResHeaderPairs.Add(new string[] { "Server", "HTTCmdPOST" });
+			channel.ResHeaderPairs.Add(new string[] { "Server", "HTTCmdTACT" });
 
 			SockCommon.WriteLog(SockCommon.ErrorLevel_e.INFO, "RES-STATUS " + channel.ResStatus);
 
