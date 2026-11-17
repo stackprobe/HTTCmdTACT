@@ -1,37 +1,20 @@
 ===============================================================================
 
-　HTTCmd
+　HTTCmdTACT
 
 ===============================================================================
 
 
-■ソフトの概要
+■開発環境
 
-　起動するだけで簡単に使える（コマンドライン版の）ウェブサーバーです。
-　ドキュメントルート（公開フォルダ）の配下にあるファイルの閲覧・ダウンロードのみ可能です。
-
-
-■動作環境
-
-　Windows 11
-
-
-■インストール方法
-
-　アーカイブの中身をローカルディスク上の任意の場所にコピーして下さい。
-
-
-■アンインストール方法
-
-　レジストリなどは一切使っていません。
-　ファイルを削除するだけでアンインストールできます。
+　Microsoft Visual Studio Community 2022
 
 
 ■起動方法
 
 　コマンドライン
 
-　　HTTCmd.exe [DOC-ROOT [PORT-NO [OPTIONS...]]]
+　　HTTCmdTACT.exe [DOC-ROOT [PORT-NO [OPTIONS...]]]
 
 　　　DOC-ROOT ⇒ ドキュメントルートのフォルダ (省略時：カレントディレクトリ)
 　　　PORT-NO  ⇒ ポート番号 (省略時：80)
@@ -40,19 +23,19 @@
 
 　実行例
 
-　　HTTCmd.exe C:\www\DocRoot
+　　HTTCmdTACT.exe C:\www\DocRoot
 
 　　　⇒ "C:\www\DocRoot" をドキュメントルートにして、ポート番号 80 でサーバーを起動する。
 
-　　HTTCmd.exe . 8080
+　　HTTCmdTACT.exe . 8080
 
 　　　⇒ カレントディレクトリをドキュメントルートにして、ポート番号 8080 でサーバーを起動する。
 
-　　HTTCmd.exe D:\HP 58946
+　　HTTCmdTACT.exe D:\HP 58946
 
 　　　⇒ "D:\HP" をドキュメントルートにして、ポート番号 58946 でサーバーを起動する。
 
-　　HTTCmd.exe
+　　HTTCmdTACT.exe
 
 　　　⇒ カレントディレクトリをドキュメントルートにして、ポート番号 80 でサーバーを起動する。
 
@@ -61,7 +44,7 @@
 
 　以下の引数で起動して下さい。実行中のサーバーが停止します。
 
-　　HTTCmd.exe /S
+　　HTTCmdTACT.exe /S
 
 
 ■拡張オプション
@@ -124,32 +107,32 @@
 
 　実行例
 
-　　HTTCmd.exe C:\www\DocRoot 80 /K
+　　HTTCmdTACT.exe C:\www\DocRoot 80 /K
 
 　　　-- /K のみ
 
-　　HTTCmd.exe C:\www\DocRoot 80 /T C:\www\ContentTypes.tsv
+　　HTTCmdTACT.exe C:\www\DocRoot 80 /T C:\www\ContentTypes.tsv
 
 　　　-- /T のみ
 
-　　HTTCmd.exe C:\www\DocRoot 80 /H C:\www\DocRoots.tsv
+　　HTTCmdTACT.exe C:\www\DocRoot 80 /H C:\www\DocRoots.tsv
 
 　　　-- /H のみ
 
-　　HTTCmd.exe C:\www\DocRoot 80 /N C:\www\404.html
+　　HTTCmdTACT.exe C:\www\DocRoot 80 /N C:\www\404.html
 
 　　　-- /N のみ
 
-　　HTTCmd.exe C:\www\DocRoot 80 /C
+　　HTTCmdTACT.exe C:\www\DocRoot 80 /C
 
 　　　-- /C のみ
 
-　　HTTCmd.exe C:\www\DocRoot 80 /K /T C:\www\ContentTypes.tsv /H C:\www\DocRoots.tsv /N C:\www\404.html /C
+　　HTTCmdTACT.exe C:\www\DocRoot 80 /K /T C:\www\ContentTypes.tsv /H C:\www\DocRoots.tsv /N C:\www\404.html /C
 
 　　　-- 全部
 
 
 ■補足
 
-　本プログラムは HTTCmd.exe 単体で動作します。
+　本プログラムは HTTCmdTACT.exe 単体で動作します。
 
