@@ -7,6 +7,6 @@ namespace HLTStudio
 {
 	public static class Consts
 	{
-		public const string SERVER_STOP_EVENT_NAME = "HTTCmd_STOP_SERVER_{c2e58422-7efd-446c-94ae-22ee1a8b31b6}";
+		public const string SERVER_STOP_EVENT_NAME = "HTTCmdPOST_STOP_SERVER_{ac1df0c0-fc3e-4d12-9cd4-6951da256dd0}";
 	}
 }

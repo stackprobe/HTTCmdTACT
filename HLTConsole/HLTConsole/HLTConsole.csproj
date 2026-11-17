@@ -51,6 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionServer.cs" />
+    <Compile Include="Actions\Action_Echo.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Commons\ArgsReader.cs" />
     <Compile Include="Commons\ProcMain.cs" />
@@ -73,6 +75,7 @@
     <Compile Include="WebServices\SockCommon.cs" />
     <Compile Include="WebServices\SockServer.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

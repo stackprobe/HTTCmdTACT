@@ -36,17 +36,7 @@ namespace HLTStudio
 			// -- choose one --
 
 			//Main4(new ArgsReader(new string[] { }));
-			//Main4(new ArgsReader(new string[] { @"C:\home\TestData\HTTCmd\DocRoot" }));
-			//Main4(new ArgsReader(new string[] { @"C:\home\TestData\HTTCmd\DocRoot", "80" }));
-			Main4(new ArgsReader(new string[] { @"C:\home\TestData\HTTCmd\DocRoot", "80", "/K" }));
-			//Main4(new ArgsReader(new string[] { @"C:\home\TestData\HTTCmd\DocRoot", "80", "/T", @"C:\temp\1.tsv" }));
-			//Main4(new ArgsReader(new string[] { @"C:\home\TestData\HTTCmd\DocRoot", "80", "/T", @"C:\temp\1.tsv", "/K" }));
-			//Main4(new ArgsReader(new string[] { @"C:\home\TestData\HTTCmd\DocRoot", "80", "/K", "/T", @"C:\temp\1.tsv" }));
-			//Main4(new ArgsReader(new string[] { @"C:\home\TestData\HTTCmd\DocRoot", "80", "/K", "/T", @"C:\temp\1.tsv" }));
-			//Main4(new ArgsReader(new string[] { @"C:\home\TestData\HTTCmd\DocRoot", "80", "/K", "/T", @"C:\temp\1.tsv", "/H", @"C:\temp\2.tsv" }));
-			//Main4(new ArgsReader(new string[] { @"C:\home\TestData\HTTCmd\DocRoot", "80", "/K", "/H", @"C:\temp\2.tsv" }));
-			//Main4(new ArgsReader(new string[] { @"C:\home\TestData\HTTCmd\DocRoot", "8080", "/K", "/T", @"C:\temp\1.tsv", "/H", @"C:\temp\2.tsv" }));
-			//Main4(new ArgsReader(new string[] { @"C:\home\TestData\HTTCmd\DocRoot", "80", "/K", "/N", @"C:\temp\1.html" }));
+			Main4(new ArgsReader(new string[] { @"..\..\..\..\DocRoot", "80", "/K" }));
 
 			// --
 #endif
@@ -87,8 +77,8 @@ namespace HLTStudio
 				HTTPServerChannel.ResponseTimeoutMillis = -1;
 				HTTPServerChannel.FirstLineTimeoutMillis = 2000;
 				HTTPServerChannel.IdleTimeoutMillis = 600000; // 10 min
-				HTTPServerChannel.BodySizeMax = 0;
-				HTTPServerChannel.BodyOnStorage = false;
+				HTTPServerChannel.BodySizeMax = 50_000_000; // 50 MB
+				HTTPServerChannel.BodyOnStorage = true;
 
 				SockCommon.TimeWaitMonitor.CTR_ROT_SEC = 60;
 				SockCommon.TimeWaitMonitor.COUNTER_NUM = 5;
@@ -167,13 +157,13 @@ namespace HLTStudio
 					this.DocRoot = Directory.GetCurrentDirectory();
 				}
 
-				ProcMain.WriteLog("HTTCmd-Start");
+				ProcMain.WriteLog("HTTCmdPOST-Start");
 				ProcMain.WriteLog("DocRoot: " + this.DocRoot);
 				ProcMain.WriteLog("PortNo: " + hs.PortNo);
 
 				hs.Run();
 
-				ProcMain.WriteLog("HTTCmd-End");
+				ProcMain.WriteLog("HTTCmdPOST-End");
 			}
 		}
 
@@ -215,19 +205,17 @@ namespace HLTStudio
 
 			SockCommon.WriteLog(SockCommon.ErrorLevel_e.INFO, "METHOD " + channel.Method);
 
-			bool head;
+			bool head = false;
+			bool get = false;
 			if (channel.Method == "HEAD")
 			{
 				head = true;
 			}
 			else if (channel.Method == "GET")
 			{
-				head = false;
+				get = true;
 			}
-			else
-			{
-				throw new Exception("Unsupported method: " + channel.Method);
-			}
+			bool headOrGet = head || get;
 
 			string docRoot = this.DocRoot;
 			string host = GetHeaderValue(channel, "Host");
@@ -289,7 +277,15 @@ namespace HLTStudio
 
 			SockCommon.WriteLog(SockCommon.ErrorLevel_e.INFO, "DST-PT " + path);
 
-			if (!targetToFile && Directory.Exists(path))
+			if (ActionServer.TryPerform(head, urlPath, channel))
+			{
+				// none
+			}
+			else if (!headOrGet)
+			{
+				throw new Exception("HEAD-GET-リクエスト以外は受け付けません");
+			}
+			else if (!targetToFile && Directory.Exists(path))
 			{
 				channel.ResStatus = 301;
 				channel.ResHeaderPairs.Add(new string[] { "Location", "/" + string.Join("", SCommon.Tokenize(relPath, "\\").Select(v => EncodeUrl(v) + "/")) });
@@ -331,7 +327,7 @@ namespace HLTStudio
 				}
 			}
 
-			channel.ResHeaderPairs.Add(new string[] { "Server", "HTTCmd" });
+			channel.ResHeaderPairs.Add(new string[] { "Server", "HTTCmdPOST" });
 
 			SockCommon.WriteLog(SockCommon.ErrorLevel_e.INFO, "RES-STATUS " + channel.ResStatus);
 
