@@ -61,6 +61,7 @@
     <Compile Include="Commons\SimpleDateTime.cs" />
     <Compile Include="Commons\WorkingDir.cs" />
     <Compile Include="Consts.cs" />
+    <Compile Include="ContentExtension.cs" />
     <Compile Include="ContentTypeCollection.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Tools\AESCipher.cs" />

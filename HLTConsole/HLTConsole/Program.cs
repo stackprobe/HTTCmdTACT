@@ -294,17 +294,33 @@ namespace HLTStudio
 			}
 			else if (File.Exists(path))
 			{
-				string file = path;
 				FileInfo fileInfo = new FileInfo(path);
+
+				byte[] content = new ContentExtension(path, channel).TryGetContent();
+				IEnumerable<byte[]> contentBody;
+				long contentBodyLength;
+
+				if (content == null)
+				{
+					contentBody = E_ReadFile(path, fileInfo.Length);
+					contentBodyLength = fileInfo.Length;
+				}
+				else
+				{
+					ProcMain.WriteLog("コンテンツ拡張が適用されました。");
+
+					contentBody = new byte[][] { content };
+					contentBodyLength = (long)content.Length;
+				}
 
 				channel.ResStatus = 200;
 				channel.ResHeaderPairs.Add(new string[] { "Content-Type", ContentTypeCollection.I.GetContentType(Path.GetExtension(path)) });
-				channel.ResBody = E_ReadFile(file, fileInfo.Length);
-				channel.ResBodyLength = this.ResChunkMode ? -1L : fileInfo.Length;
+				channel.ResBody = contentBody;
+				channel.ResBodyLength = contentBodyLength;
 
 				if (head)
 				{
-					channel.ResHeaderPairs.Add(new string[] { "Content-Length", fileInfo.Length.ToString() });
+					channel.ResHeaderPairs.Add(new string[] { "Content-Length", contentBodyLength.ToString() });
 					channel.ResHeaderPairs.Add(new string[] { "X-Last-Modified-Time", new SimpleDateTime(fileInfo.LastWriteTime).ToTimeStamp().ToString() });
 					channel.ResBody = null;
 				}
