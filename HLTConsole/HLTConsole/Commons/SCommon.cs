@@ -619,12 +619,13 @@ namespace HLTStudio.Commons
 				this.Inner.Remove(key);
 			}
 
-#if false // 不使用
 			public void Remove(K key, int index)
 			{
 				this.Inner[key].RemoveAt(index);
+
+				if (this.Inner[key].Count == 0)
+					this.Inner.Remove(key);
 			}
-#endif
 
 			public int Count => this.Inner.Values.Sum(s => s.Count);
 
@@ -702,12 +703,13 @@ namespace HLTStudio.Commons
 				this.Inner.Remove(value);
 			}
 
-#if false // 不使用
 			public void Remove(T value, int index)
 			{
 				this.Inner[value].RemoveAt(index);
+
+				if (this.Inner[value].Count == 0)
+					this.Inner.Remove(value);
 			}
-#endif
 
 			public int Count => this.Inner.Values.Sum(s => s.Count);
 
@@ -728,12 +730,10 @@ namespace HLTStudio.Commons
 
 			public int KindCount => this.Inner.Count;
 
-#if false // .Values を使うこと。
 			public IEnumerable<KeyValuePair<T, T>> Iterate()
 			{
 				return this.Values.Select(value => new KeyValuePair<T, T>(value, value));
 			}
-#endif
 		}
 
 		public static MultiHashSet<string> CreateMultiSet()
@@ -1810,6 +1810,19 @@ namespace HLTStudio.Commons
 		public static string ChangeExt(string path, string ext)
 		{
 			return Path.Combine(SCommon.ToParentPath(path), Path.GetFileNameWithoutExtension(path) + ext);
+		}
+
+		public static string GetDesktopDirectoryPath()
+		{
+			string dir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+
+			if (string.IsNullOrEmpty(dir))
+				throw new Exception("デスクトップの場所が取得できません。(空文字列)");
+
+			if (!Directory.Exists(dir))
+				throw new Exception("デスクトップの場所が取得できません。(存在しない)");
+
+			return dir;
 		}
 
 		#region ReadPart, WritePart

@@ -79,7 +79,7 @@ namespace HLTStudio
 
 		private byte[] GetDummyContent(string[] parameters)
 		{
-			return Encoding.UTF8.GetBytes($"<meta charset=\"UTF-8\"><div>これは \"{this.StrPath}\" というファイルのコンテンツ拡張です。(これはダミーです)</div>");
+			return Encoding.UTF8.GetBytes($"<meta charset=\"UTF-8\"><div>これは \"{Path.GetFileName(this.StrPath)}\" というファイルのコンテンツ拡張です。(これはダミーです)</div>");
 		}
 
 		private byte[] ReplaceWhenSmartphone(string[] parameters)

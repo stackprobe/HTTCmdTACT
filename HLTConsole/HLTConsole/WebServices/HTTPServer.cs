@@ -86,6 +86,9 @@ namespace HLTStudio.WebServices
 
 				if (!hsChannel.KeepAlive)
 					break;
+
+				channel.BodyOutputStream.Dispose();
+				channel.BodyOutputStream = HTTPBodyOutputStream.Create(HTTPServerChannel.BodyOnStorage);
 			}
 		}
 	}

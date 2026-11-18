@@ -11,9 +11,14 @@ namespace HLTStudio.Actions
 	{
 		public void Run(HTTPServerChannel channel)
 		{
+			byte[] body = channel.Body.ToByteArray();
+
+			if (3000 < body.Length)// rough limit
+				throw null; // 2bs 
+
 			channel.ResStatus = 200;
 			channel.ResHeaderPairs.Add(new string[] { "Content-Type", "application/octet-stream" });
-			channel.ResBody = new byte[][] { channel.Body.ToByteArray() };
+			channel.ResBody = new byte[][] { body };
 			channel.ResBodyLength = -1L;
 		}
 	}

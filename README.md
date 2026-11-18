@@ -44,7 +44,7 @@ curl.exe -X POST --data "Hello" http://localhost:8080/API-Echo
 
 `Program.P_Connected` と、そこから呼び出されるアクションの `Run` は、各接続を順番に処理するサーバーループ内で同期実行されます。この中で長時間の計算や同期 I/O を行うと、その間は他のリクエストの処理も待たされます。`Run` では応答の設定を短時間で済ませるようにしてください。
 
-応答の生成に時間が掛かる場合は、処理を短い単位に分割した `IEnumerable<byte[]>` のイテレーターメソッドを用意し、その戻り値を `channel.ResBody` に設定します。イテレーター内で必要な分だけ生成して `yield return` することで、応答の送信に合わせて処理を進められます。既存の `Program.E_ReadFile` は、最大64 KiBずつファイルを読み出して返す実装例です。
+応答の生成に時間が掛かる場合は、処理を短い単位に分割した `IEnumerable<byte[]>` のイテレーターメソッドを用意し、その戻り値を `channel.ResBody` に設定します。イテレーター内で必要な分だけ生成して `yield return` することで、応答の送信に合わせて処理を進められます。
 
 ただし、次の点に注意してください。
 
@@ -53,6 +53,11 @@ curl.exe -X POST --data "Hello" http://localhost:8080/API-Echo
 - **全体をメモリにためてから分割しないでください。** 配列やリストなどに応答全体を保持すると、`yield` を使ってもメモリ使用量は抑えられません。返す配列の大きさや、イテレーターが保持するデータ量を抑え、同時接続数も考慮してください。また、最初の2要素が先読みされるため、返した配列を直後に書き換えて次の要素に使い回すと、送信内容が壊れる可能性があります。
 - **応答のステータスとヘッダーは `Run` 内で確定してください。** イテレーターの実行時には、すでに送信が始まっています。送信後に例外が起きても、エラー用のステータスや本文へ応答全体を差し替えることはできません。
 - **遅延処理で使うリクエスト本文は、`Run` 内で参照や必要な値を確保してください。** `SendResponse` の開始時に `channel.Body` は `null` に設定されるため、イテレーター内で `channel.Body` を取得することはできません。本文全体をコピーして確保する場合は、そのメモリ使用量にも注意してください。
+- **一時ファイルの削除は、応答本文のイテレーター末尾に任せないでください。** 通信が途中で切断されると、本文の列挙が打ち切られ、末尾の削除処理まで進まないことがあります。
+
+  一時ファイルを使う場合は、`Run` 内で `ActionUtility.GetRequestScopedTemporaryDirectoryPath(channel)` を呼び、そのディレクトリにファイルを作成してください。同じリクエスト内でも、呼び出すたびに新しいディレクトリを作成して異なるパスを返します。このメソッドには `HTTPServerChannel.BodyOnStorage = true` が必要です（現在の起動設定では有効です）。Keep-Alive で接続が続く場合も、応答の送信が完了するとそのリクエストで作成したディレクトリとその中のファイルが削除されます。送信途中で切断された場合は、切断処理で削除されます。[ActionUtility.cs](HLTConsole/HLTConsole/ActionUtility.cs)
+
+  ファイルの内容を応答本文として返す場合は、書き込みを終えてファイルを閉じてから `channel.ResBody = ActionUtility.E_ReadFile(path)` を設定してください。`E_ReadFile` は呼び出し時にファイルサイズを取得し、列挙時は最大 64 KiB ずつ読み出します。各 `yield return` の前にファイルを閉じるため、送信が途中で止まっても読み取り用のファイルハンドルが開いたままになりません。
 
 送信処理の詳細は [HTTPServerChannel.SendResponse](HLTConsole/HLTConsole/WebServices/HTTPServerChannel.cs)、接続の切り替えに関する判定は [SockChannel.PreRecvSend](HLTConsole/HLTConsole/WebServices/SockChannel.cs) を参照してください。
 

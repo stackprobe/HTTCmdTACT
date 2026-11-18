@@ -57,6 +57,16 @@ namespace HLTStudio
 
 		private void Main5(ArgsReader ar)
 		{
+
+#if false // テンポラリフォルダを別の場所にしたい場合に使用する。
+			{
+				string TMP_DIR = @"D:\Temp\HTTCmdTACT_TMP";
+
+				SCommon.DeleteAndCreateDir(TMP_DIR);
+				WorkingDir.ChangeTMPDir(TMP_DIR);
+			}
+#endif
+
 			// 複数のサーバーを起動していた場合、全て停止できるようにマニュアル・リセットとする。
 			using (EventWaitHandle evStop = new EventWaitHandle(false, EventResetMode.ManualReset, Consts.SERVER_STOP_EVENT_NAME))
 			{
@@ -406,6 +416,17 @@ namespace HLTStudio
 
 				offset += (long)readSize;
 			}
+		}
+
+		public static IEnumerable<byte[]> PUB_E_ReadFile(string file)
+		{
+			if (string.IsNullOrEmpty(file))
+				throw new Exception("Bad file");
+
+			if (!File.Exists(file))
+				throw new Exception("no file");
+
+			return E_ReadFile(file, new FileInfo(file).Length);
 		}
 	}
 }
