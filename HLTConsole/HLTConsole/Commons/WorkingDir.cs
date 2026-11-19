@@ -109,7 +109,8 @@ namespace HLTStudio.Commons
 			{
 				try
 				{
-					Directory.Delete(this.Dir, true);
+					//Directory.Delete(this.Dir, true); // del @ 2026.11.19
+					SCommon.DeletePath(this.Dir);
 				}
 				catch (Exception ex)
 				{
