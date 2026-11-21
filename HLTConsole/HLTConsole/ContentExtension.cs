@@ -35,6 +35,9 @@ namespace HLTStudio
 
 		public byte[] TryGetContent()
 		{
+			if (this.StrPath.EndsWithIgnoreCase(CONTENT_EXTENSION_FILE_SUFFIX)) // ? このファイル自身がコンテンツ拡張ファイルかも -> 見せない！
+				return Encoding.ASCII.GetBytes("[REDACTED]");
+
 			if (!CONTENT_EXTENSION_TARGET_EXTS.Any(ext => this.StrPath.EndsWithIgnoreCase(ext))) // ? コンテンツ拡張対象拡張子ではない -> 拡張不要
 				return null;
 
