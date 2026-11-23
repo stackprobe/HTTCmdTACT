@@ -14,7 +14,35 @@
     <pre id="dummy-response" role="status">Loading...</pre>
     <h2>API-Echo</h2>
     <pre id="response" role="status">Loading...</pre>
+    <h2>API-FizzBuzz</h2>
+    <p>
+        <label>start <input id="fizzbuzz-start" type="number" min="-2147483648" max="2147483647" step="1" value="1" required></label>
+        <label>end <input id="fizzbuzz-end" type="number" min="-2147483648" max="2147483647" step="1" value="15" required></label>
+        <a id="fizzbuzz-download" href="/API-FizzBuzz?start=1&amp;end=15" download="FizzBuzz.txt">FizzBuzz.txt をダウンロード</a>
+    </p>
+    <h2>API-YourRequest</h2>
+    <p><a href="YourRequest.html">API-YourRequest を試す</a></p>
     <script>
+        const fizzBuzzStart = document.getElementById('fizzbuzz-start');
+        const fizzBuzzEnd = document.getElementById('fizzbuzz-end');
+        const fizzBuzzDownload = document.getElementById('fizzbuzz-download');
+
+        function updateFizzBuzzLink() {
+            if (!fizzBuzzStart.validity.valid || !fizzBuzzEnd.validity.valid) {
+                fizzBuzzDownload.removeAttribute('href');
+                return;
+            }
+            const query = new URLSearchParams({
+                start: fizzBuzzStart.valueAsNumber,
+                end: fizzBuzzEnd.valueAsNumber
+            });
+            fizzBuzzDownload.href = '/API-FizzBuzz?' + query;
+        }
+
+        fizzBuzzStart.addEventListener('input', updateFizzBuzzLink);
+        fizzBuzzEnd.addEventListener('input', updateFizzBuzzLink);
+        updateFizzBuzzLink();
+
         async function dummy() {
             const output = document.getElementById('dummy-response');
             try {

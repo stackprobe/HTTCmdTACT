@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>API-YourRequest | HTTCmdTACT</title>
+</head>
+<body>
+    <p><a href="index.html">HTTCmdTACT に戻る</a></p>
+    <h1>API-YourRequest</h1>
+    <fieldset id="request-examples">
+        <legend>送信するリクエスト</legend>
+        <p><button type="button" id="send-get">GET（クエリ付き）</button></p>
+        <p>
+            <label for="request-text">テキスト本文</label><br>
+            <textarea id="request-text" rows="3" cols="30">こんにちは
+Hello</textarea><br>
+            <button type="button" id="send-text">POST（テキスト）</button>
+        </p>
+        <p><button type="button" id="send-json">POST（JSON サンプル）</button></p>
+    </fieldset>
+    <h2>レスポンス</h2>
+    <p id="request-status" role="status"></p>
+    <pre id="request-response"></pre>
+    <script>
+        const examples = document.getElementById('request-examples');
+        const status = document.getElementById('request-status');
+        const output = document.getElementById('request-response');
+
+        async function sendRequest(url, options) {
+            examples.disabled = true;
+            status.textContent = '送信中…';
+            output.textContent = '';
+            try {
+                const response = await fetch(url, options);
+                status.textContent = 'HTTP ' + response.status;
+                output.textContent = response.ok
+                    ? JSON.stringify(await response.json(), null, 2)
+                    : await response.text();
+            } catch (error) {
+                status.textContent = 'リクエストの実行または応答の読み取りに失敗しました。';
+                output.textContent = error.message;
+            } finally {
+                examples.disabled = false;
+            }
+        }
+
+        document.getElementById('send-get').addEventListener('click', () => {
+            const query = new URLSearchParams({ message: 'こんにちは', count: '2' });
+            sendRequest('/API-YourRequest?' + query);
+        });
+        document.getElementById('send-text').addEventListener('click', () => {
+            sendRequest('/API-YourRequest', {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain; charset=UTF-8' },
+                body: document.getElementById('request-text').value
+            });
+        });
+        document.getElementById('send-json').addEventListener('click', () => {
+            sendRequest('/API-YourRequest', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: 'こんにちは', count: 2 })
+            });
+        });
+    </script>
+</body>
+</html>

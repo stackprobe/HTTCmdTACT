@@ -31,6 +31,12 @@ namespace HLTStudio
 			if (urlPath == "/API-Echo")
 				return channel => new Action_Echo().Run(channel);
 
+			if (urlPath == "/API-FizzBuzz")
+				return channel => new Action_FizzBuzz().Run(channel);
+
+			if (urlPath == "/API-YourRequest")
+				return channel => new Action_YourRequest().Run(channel);
+
 			return null;
 		}
 	}

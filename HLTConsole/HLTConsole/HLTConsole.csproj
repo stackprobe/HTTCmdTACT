@@ -54,6 +54,8 @@
     <Compile Include="ActionServer.cs" />
     <Compile Include="Actions\Action_Dummy.cs" />
     <Compile Include="Actions\Action_Echo.cs" />
+    <Compile Include="Actions\Action_FizzBuzz.cs" />
+    <Compile Include="Actions\Action_YourRequest.cs" />
     <Compile Include="ActionUtility.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Commons\ArgsReader.cs" />
