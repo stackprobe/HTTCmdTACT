@@ -17,6 +17,9 @@ namespace HLTStudio.Actions
 
 			byte[] content = channel.Body.ToByteArray();
 
+			if (3000 < content.Length) // rough limit
+				throw null; // 2bs
+
 			using (var writer = SCommon.OpenFile_m.OpenTextFileForWrite(file, Encoding.UTF8))
 			{
 				writer.WriteLine("{");

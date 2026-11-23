@@ -4,7 +4,7 @@
 
 HTTCmdTACT は、静的ファイルを配信する HTTCmd に、リクエストに応じて C# の処理を実行し、応答を生成する仕組みを加えたものです。独自の API や Web アプリケーションを作るためのベアボーン（最小限の土台）として、ソースコードを拡張して使えます。
 
-- **プログラムで応答を生成。** URL に対応するアクションを C# で実装し、HTTP ステータス、ヘッダー、本文を設定できます。サンプルとして `/API-Echo` を用意しています。
+- **プログラムで応答を生成。** URL に対応するアクションを C# で実装し、HTTP ステータス、ヘッダー、本文を設定できます。サンプルとして `/API-Echo`、`/API-FizzBuzz`、`/API-YourRequest` を用意しています。
 - **静的ファイルも配信。** アクションに対応しない URL は、公開フォルダー（DocRoot）内のファイルを配信します。
 - **完全に 1 スレッドで動くサーバー。** 接続の受け付け、送受信、C# のアクション実行をすべて同じスレッドで行います。接続ごとの送受信をイテレーターで進め、通信待ちや長い転送の途中でほかの接続に処理を切り替えます。アクションは順に実行されるため、共有状態を扱いやすくなります。
 - **EXE ひとつで起動。** 公開したいフォルダーを `HTTCmdTACT.exe` にドラッグ＆ドロップすると、そのフォルダーを DocRoot としてポート `80` で起動します。
@@ -25,6 +25,26 @@ curl.exe -X POST --data "Hello" http://localhost:8080/API-Echo
 ```
 
 ブラウザーで `http://localhost:8080/API-Echo` を直接開いた場合は、本文なしの `GET` リクエストになるため、応答本文も空になります。
+
+### API-FizzBuzz と API-YourRequest
+
+- `/API-FizzBuzz` は、クエリで指定した `start` から `end` まで（両端を含む）の FizzBuzz を、1 行ずつプレーンテキストで返します。応答本文をイテレーターで逐次生成する例です。[Action_FizzBuzz.cs](HLTConsole/HLTConsole/Actions/Action_FizzBuzz.cs)
+- `/API-YourRequest` は、受け取ったリクエスト行、メソッド、クエリを含むパス、ヘッダー、本文などを JSON で返します。本文は UTF-8 として読み取った文字列と Base64 の両方を確認できます。リクエストごとの一時ファイルに応答を生成し、ファイルから送信する例です。[Action_YourRequest.cs](HLTConsole/HLTConsole/Actions/Action_YourRequest.cs)
+
+```bat
+curl.exe "http://localhost:8080/API-FizzBuzz?start=1&end=15"
+curl.exe -X POST --data "Hello" http://localhost:8080/API-YourRequest
+```
+
+ブラウザーで試す場合は、リポジトリのルートで次のように `DocRoot` を指定して起動し、`http://localhost:8080/` を開きます。
+
+```bat
+HTTCmdTACT.exe DocRoot 8080
+```
+
+トップページでは範囲を入力して `FizzBuzz.txt` をダウンロードできます。「API-YourRequest を試す」からは、クエリ付きの `GET` や、テキストまたは JSON を本文に含む `POST` を送信し、応答を確認できます。
+
+### 独自のアクションを実装する
 
 独自の処理を実装するときは、次のファイルを起点にしてください。アクションの変更にはソースコードの編集と再ビルドが必要です。
 
