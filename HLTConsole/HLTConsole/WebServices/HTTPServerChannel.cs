@@ -393,6 +393,8 @@ namespace HLTStudio.WebServices
 
 			if (this.ResBody == null)
 			{
+				this.KeepAlive = false; // 2026.11.23 BUGFIX: Close the connection to delimit the response (RFC 9112 §6.3).
+
 				foreach (var relay in this.EndHeader())
 					yield return relay;
 			}
